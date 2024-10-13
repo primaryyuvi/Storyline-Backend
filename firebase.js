@@ -1,4 +1,4 @@
-const { initializeApp, cert } = require('firebase-admin/app');
+const { initializeApp, cert, getApps } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 const { getStorage } = require('firebase-admin/storage');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
@@ -7,20 +7,25 @@ require('dotenv').config();
 // Firebase initialization
 function initializeFirebase() {
   // Load the service account key JSON file
-  const serviceAccount = {
-    "type": "service_account",
-    "project_id": process.env.FIREBASE_PROJECT_ID,
-    "private_key": process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    "client_email": process.env.FIREBASE_CLIENT_EMAIL,
-  };
+  if (!getApps().length) {
+    // Load the service account key JSON file
+    const serviceAccount = {
+      "type": "service_account",
+      "project_id": process.env.FIREBASE_PROJECT_ID,
+      "private_key": process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      "client_email": process.env.FIREBASE_CLIENT_EMAIL,
+    };
 
-  // Initialize the app with a service account, granting admin privileges
-  initializeApp({
-    credential: cert(serviceAccount),
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET
-  });
+    // Initialize the app with a service account, granting admin privileges
+    initializeApp({
+      credential: cert(serviceAccount),
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET
+    });
 
-  console.log('Firebase initialized successfully');
+    console.log('Firebase initialized successfully');
+  } else {
+    console.log('Firebase app already initialized.');
+  }
 
   // Get Firestore and Storage instances
   const db = getFirestore();
