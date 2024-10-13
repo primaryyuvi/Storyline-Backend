@@ -22,13 +22,12 @@ async function handleVideoUpload(req, res) {
     console.log(url);
     const response = await axios.get(url, { responseType: 'blob' });
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent([
-      {
-        inlineData: {
-          mimeType: "video/mp4",
-          data: Buffer.from(response.data).toString('base64')
-        }
+    const result = await model.generateContent([{
+      fileData: {
+        mimeType: response.headers['content-type'],
+        fileUri: url,
       }
+    },
     ]);
     const videoAnalysis = await result.response.text();
     const docRef = await db.collection('videos').document(videoId).update({ analysis: videoAnalysis });
