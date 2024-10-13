@@ -6,7 +6,7 @@ const { db, storage,genAI } = initializeServices();
 
 async function handleVideoUpload(req, res) {
   try {
-    const { url } = req.body;
+    const { url,videoId } = req.body;
 
     if (!url) {
       return res.status(400).json({ success: false, error: 'Video URL is required' });
@@ -20,11 +20,16 @@ async function handleVideoUpload(req, res) {
 
     console.log(url);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent([url]);
+    const result = await model.generateContent([
+      {
+        inlineData: {
+          mimeType: "video/mp4",
+          data: url
+        }
+      }
+    ]);
     const videoAnalysis = await result.response.text();
-    const docRef = await db.collection('videos').add({
-      analysis: videoAnalysis,
-    });
+    const docRef = await db.collection('videos').document(videoId).update({ analysis: videoAnalysis });
     console.log(videoAnalysis)
     console.log('Video uploaded successfully:', docRef.id);
     res.json({ success: true, videoId: docRef.id });
