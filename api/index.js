@@ -7,6 +7,8 @@ const multer = require('multer');
 const app = express();
 const upload = multer({ memory: true });
 const { db, storage, genAI } = initializeServices();
+app.use(bodyParser.json());
+  app.use(cors());
 
 app.post('/api/upload-video', handleVideoUpload);
 
