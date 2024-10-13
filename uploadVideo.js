@@ -19,7 +19,7 @@ async function handleVideoUpload(req, res) {
     }
 
     console.log(url);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent([url]);
     const videoAnalysis = await result.response.text();
     const docRef = await db.collection('videos').add({
