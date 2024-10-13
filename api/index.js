@@ -1,4 +1,6 @@
 const express = require('express');
+const bodyParser = require("body-parser");
+const cors = require('cors');
 const { initializeServices } = require('../firebase');
 const { handleVideoUpload } = require('../uploadVideo');
 const { handlequestions } = require('../questions');
