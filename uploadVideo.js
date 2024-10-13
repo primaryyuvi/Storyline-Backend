@@ -1,6 +1,8 @@
 
 // Assuming you've already initialized Firebase and Gemini in a separate file
-const { db, storage, genAI } = require('./firebase');
+const { initializeServices } = require('./firebase');
+
+const { db, storage,genAI } = initializeServices();
 
 async function handleVideoUpload(req, res) {
   try {
