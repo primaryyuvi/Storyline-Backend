@@ -36,20 +36,34 @@ function initializeFirebase() {
 
 // Gemini initialization
 function initializeGemini() {
-  // Initialize the Gemini API with your API key
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  try {
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error('GEMINI_API_KEY is not set in environment variables');
+    }
 
-  console.log('Gemini API initialized successfully');
-
-  return genAI;
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    console.log('Gemini API initialized successfully');
+    return genAI;
+  } catch (error) {
+    console.error('Error initializing Gemini AI:', error);
+    throw error;
+  }
 }
-
 // Main initialization function
 function initializeServices() {
-  const { db, storage } = initializeFirebase();
-  const genAI = initializeGemini();
+  try {
+    const { db, storage } = initializeFirebase();
+    const genAI = initializeGemini();
 
-  return { db, storage, genAI };
+    if (!genAI) {
+      throw new Error('Gemini AI failed to initialize');
+    }
+
+    return { db, storage, genAI };
+  } catch (error) {
+    console.error('Error in service initialization:', error);
+    throw error;
+  }
 }
 
 // Export the initialization function
