@@ -26,7 +26,7 @@ async function handleVideoUpload(req, res) {
       {
         inlineData: {
           mimeType: "video/mp4",
-          data: response.data
+          data: Buffer.from(response.data).toString('base64')
         }
       }
     ]);
