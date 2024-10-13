@@ -10,6 +10,12 @@ async function handleVideoUpload(req, res) {
       return res.status(400).json({ success: false, error: 'Video URL is required' });
     }
 
+    
+    if (!genAI) {
+      console.error('Gemini AI is not initialized');
+      return res.status(500).json({ success: false, error: 'AI service is not available' });
+    }
+
     console.log(url);
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
     const result = await model.generateContent([url]);
