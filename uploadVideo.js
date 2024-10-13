@@ -1,6 +1,7 @@
 
 // Assuming you've already initialized Firebase and Gemini in a separate file
 const { initializeServices } = require('./firebase');
+const axios = require('axios');
 
 const { db, storage,genAI } = initializeServices();
 
@@ -19,6 +20,7 @@ async function handleVideoUpload(req, res) {
     }
 
     console.log(url);
+    const response = await axios.get(url, { responseType: 'blob' });
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent([
       {
