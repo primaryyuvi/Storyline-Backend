@@ -21,11 +21,12 @@ async function handleVideoUpload(req, res) {
 
     console.log(url);
     const response = await axios.get(url, { responseType: 'blob' });
+    const uri = getURIfromFirebaseURL(url);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent([{
       fileData: {
         mimeType: response.headers['content-type'],
-        fileUri: url,
+        fileUri: uri,
       }
     },
     ]);
@@ -38,6 +39,16 @@ async function handleVideoUpload(req, res) {
     console.error('Error in video upload handler:', error);
     res.status(500).json({ success: false, error: error.message });
   }
+}
+
+function getURIfromFirebaseURL(firebaseURL) {
+  // Remove the base URL and file path
+  const uriString = firebaseURL.replace('https://firebasestorage.googleapis.com/v0/b/', '').replace('/o/', '');
+
+  // Decode the URI
+  const uri = decodeURIComponent(uriString);
+
+  return uri;
 }
 
 module.exports = { handleVideoUpload };
