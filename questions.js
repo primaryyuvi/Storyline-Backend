@@ -1,6 +1,6 @@
 const { initializeServices } = require('./firebase');
 
-const { db, storage,genAI } = initializeServices();
+const { db, storage,genAI,fileManager } = initializeServices();
 
 
 async function handlequestions(req,res){

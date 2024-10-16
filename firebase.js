@@ -2,6 +2,7 @@ const { initializeApp, cert, getApps } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 const { getStorage } = require('firebase-admin/storage');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { GoogleAIFileManager } = require( "@google/generative-ai/server")
 require('dotenv').config();
 
 // Firebase initialization
@@ -42,8 +43,9 @@ function initializeGemini() {
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
     console.log('Gemini API initialized successfully');
-    return genAI;
+    return {genAI , fileManager};
   } catch (error) {
     console.error('Error initializing Gemini AI:', error);
     throw error;
@@ -53,13 +55,13 @@ function initializeGemini() {
 function initializeServices() {
   try {
     const { db, storage } = initializeFirebase();
-    const genAI = initializeGemini();
+    const {genAI , fileManager}= initializeGemini();
 
     if (!genAI) {
       throw new Error('Gemini AI failed to initialize');
     }
 
-    return { db, storage, genAI };
+    return { db, storage, genAI , fileManager};
   } catch (error) {
     console.error('Error in service initialization:', error);
     throw error;
