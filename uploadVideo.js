@@ -198,7 +198,7 @@ async function processVideosWithGemini(videos,blogUrls) {
 
     // Create multi-part prompt
     const model = genAI.getGenerativeModel({
-          model: "gemini-1.5-flash",
+          model: "gemini-1.5-pro",
          });
     const result = await model.generateContent([
       ...videoParts,
