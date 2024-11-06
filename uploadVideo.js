@@ -200,12 +200,13 @@ async function processVideosWithGemini(videos,blogUrls) {
     const model = genAI.getGenerativeModel({
           model: "gemini-1.5-pro",
          });
+    console.log('Model:', model);     
     const result = await model.generateContent([
       ...videoParts,
       ...blogUrls,
       { text: prompt }
     ]);
-
+    console.log('Result:', result);
     const response = await result.response;
     console.log(response.usageMetadata);
     return response.text();
