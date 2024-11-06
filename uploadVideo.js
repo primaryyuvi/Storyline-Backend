@@ -197,14 +197,16 @@ async function processVideosWithGemini(videos,blogUrls) {
     const prompt = `Please analyze these related videos and blog posts together and provide a comprehensive analysis without missing out on a single detail since this will be used as knowledge base for answering questions about the video and the blog.`;
 
     // Create multi-part prompt
-    const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+    const model = genAI.getGenerativeModel({
+          model: "gemini-1.5-flash",
+         });
     const result = await model.generateContent([
       ...videoParts,
       ...blogUrls,
       { text: prompt }
     ]);
 
-    const response = result.response;
+    const response = await result.response;
     console.log(response.usageMetadata);
     return response.text();
   } catch (error) {
