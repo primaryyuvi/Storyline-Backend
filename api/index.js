@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require('cors');
 const { handleVideoUpload } = require('../uploadVideo');
 const { handlequestions } = require('../questions');
-const {handleQuestionsWtihContext} = require('../questions2');
+const {handleQuestionsWithContext} = require('../questions2');
 
 const app = express();
 app.use(bodyParser.json());
@@ -13,7 +13,7 @@ app.post('/api/upload-video', handleVideoUpload);
 
 app.post('/api/questions', express.json(), handlequestions);
 
-app.post('/api/question',express.json(), handleQuestionsWtihContext);
+app.post('/api/question', handleQuestionsWithContext);
 
 app.get("/api", (req, res) => {
     res.status(200).json({ message: "For Testing" });

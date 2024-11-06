@@ -7,47 +7,44 @@ const { db, storage, genAI, fileManager } = initializeServices();
 
 
 
-async function handlequestionsWithContext(req, res) {
-    const { sessionId, userId, contextUrl, isFirstMessage } = req.query;
-    const { content } = req.body;
+async function handleQuestionsWithContext(req, res) {
+    const { sessionId, messageId, contextUrl, isFirstMessage ,userId} = req.query;
+    const { question } = req.body;
   
-    if (!userId) {
-      res.status(400).send('UserId is required');
-      return;
-    }
+  
+
+    console.log("contextUrl", contextUrl);
+    console.log("isFirstMessage", isFirstMessage);
+    console.log("sessionId", sessionId);
+    console.log("messageId", messageId);
+    console.log("content", question);
   
     try {
-      // Store user message
-      const userMessage = {
-        id: uuidv4(),
-        message: content,
-        user: true,
-        userId: userId,
-        sessionId: sessionId,
-        timestamp: Date.now()
-      };
+    
       let conversationHistory = [];
   
       if (isFirstMessage === 'true') {
         // Fetch context for new session from the provided URL
         if (contextUrl != "") {
           conversationHistory.push({
-            role: 'system',
-            parts: `Context: ${contextUrl}`
+            role: 'user',
+            parts: [{ text: `Context: ${contextUrl}` }]
           });
         }
       } else {
         // Get existing chat history
         const chatHistory = await db.collection('messages')
           .where('sessionId', '==', sessionId)
+          .where('id', '!=', messageId)
           .orderBy('timestamp')
           .get();
   
         conversationHistory = chatHistory.docs.map(doc => {
           const data = doc.data();
+          console.log("data", data.id);
           return {
             role: data.user ? 'user' : 'model',
-            parts: data.message
+            parts: [{ text: data.message }]
           };
         });
       }
@@ -55,7 +52,7 @@ async function handlequestionsWithContext(req, res) {
       // Add the current user message to the conversation history
       conversationHistory.push({
         role: 'user',
-        parts: content
+        parts: [{ text: question }]
       });
   
       // Get response from Gemini API
@@ -63,7 +60,7 @@ async function handlequestionsWithContext(req, res) {
       const chat = model.startChat({
         history: conversationHistory,
       });
-      const result = await chat.sendMessage(content);
+      const result = await chat.sendMessage(question);
       const aiResponse = result.response;
   
       // Store AI message
@@ -72,11 +69,9 @@ async function handlequestionsWithContext(req, res) {
         message: aiResponse.text(),
         user: false,
         userId: userId,
-        sessionId: currentSessionId,
+        sessionId: sessionId,
         timestamp: Date.now()
       };
-
-      await db.collection('messages').add(userMessage);
       await db.collection('messages').add(aiMessage);
   
       // Send both user and AI messages back to the client, along with the sessionId
@@ -85,9 +80,9 @@ async function handlequestionsWithContext(req, res) {
         answer : aiResponse.text(),
       });
     } catch (error) {
-      console.error('Error:', error);
-      res.status(500).send('An error occurred while processing your request');
+      console.error('Error in question handler:', error);
+      res.status(500).json({ success: false, error: error.message });
     }
 }
 
-module.exports = { handlequestionsWithContext };
+module.exports = { handleQuestionsWithContext };
