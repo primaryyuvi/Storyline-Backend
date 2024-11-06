@@ -280,10 +280,7 @@ async function handleVideoUpload(req, res) {
     console.error('Error in video upload handler:', error);
     res.status(500).json({ success: false, error: error.message });
   }
-  // finally {
-  //   // Cleanup temporary files
-  //   await cleanupTempFiles(tempFiles);
-  // }
+ 
 }
 
 module.exports = { handleVideoUpload };
