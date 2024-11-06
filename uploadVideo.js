@@ -165,8 +165,10 @@ async function fetchVideoAsBase64(videoUrl) {
       url: videoUrl,
       responseType: 'arraybuffer'
     });
-    
+    console.log(response.data);
+
     const base64Data = Buffer.from(response.data).toString('base64');
+    console.log(`Fetched video as base64: ${videoUrl}`);
     return base64Data;
   } catch (error) {
     console.error('Error fetching video:', error);
@@ -189,6 +191,8 @@ async function processVideosWithGemini(videos,blogUrls) {
         };
       })
     );
+
+    console.log('Fetched all videos as base64');
 
     const prompt = `Please analyze these related videos and blog posts together and provide a comprehensive analysis without missing out on a single detail since this will be used as knowledge base for answering questions about the video and the blog.`;
 
