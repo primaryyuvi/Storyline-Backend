@@ -64,7 +64,7 @@ async function handleQuestionsWithContext(req, res) {
       });
       const result = await chat.sendMessage(question);
       const aiResponse = result.response;
-  
+      console.log("aiResponse", aiResponse.usageMetadata);
       // Store AI message
       const aiMessage = {
         id: uuidv4(),
