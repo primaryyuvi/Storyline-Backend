@@ -22,7 +22,7 @@ async function handleQuestionsWithContext(req, res) {
     try {
     
       let conversationHistory = [];
-      const prompt = question +" Please answer the question based on the video context provided. If the question is unanswerable, please respond with I don't know the answer to the question as it is out of the context of the video"";
+      const prompt = question +" Please answer the question based on the video context provided. If the question is unanswerable, please respond with I don't know the answer to the question as it is out of the context of the video"
   
       if (isFirstMessage === 'true') {
         // Fetch context for new session from the provided URL
