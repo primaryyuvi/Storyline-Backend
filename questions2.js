@@ -22,7 +22,7 @@ async function handleQuestionsWithContext(req, res) {
     try {
     
       let conversationHistory = [];
-      const prompt = question + "whenever a question is asked to answer about you should refer the context provided in the history";
+      const prompt = question +" Please answer the question based on the video context provided. If the question is unanswerable, please respond with I don't know the answer to the question as it is out of the context of the video"";
   
       if (isFirstMessage === 'true') {
         // Fetch context for new session from the provided URL
@@ -56,6 +56,7 @@ async function handleQuestionsWithContext(req, res) {
         parts: [{ text: question }]
       });
   
+      console.log("conversationHistory", conversationHistory);
       // Get response from Gemini API
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
       const chat = model.startChat({
