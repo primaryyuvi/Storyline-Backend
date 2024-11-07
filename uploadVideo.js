@@ -274,10 +274,14 @@ async function handleVideoUpload(req, res) {
 
 
     // Save combined analysis to database
-    videos.forEach(async (video) => {
-      const docRef = await db.collection('videos').doc(video.videoId).update({ analysis: combinedAnalysis });
-      console.log('Video uploaded successfully:', docRef.id);
-    }, this);
+    const batch = db.batch();
+
+    videos.forEach((video) => {
+      const docRef = db.collection('videos').doc(video.videoId);
+      batch.update(docRef, { analysis: combinedAnalysis });
+    });
+
+    await batch.commit();
 
     res.json({ success: true });
 

@@ -58,7 +58,7 @@ async function handleQuestionsWithContext(req, res) {
   
       console.log("conversationHistory", conversationHistory);
       // Get response from Gemini API
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
       const chat = model.startChat({
         history: conversationHistory,
       });
