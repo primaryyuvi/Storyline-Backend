@@ -22,6 +22,7 @@ async function handleQuestionsWithContext(req, res) {
     try {
     
       let conversationHistory = [];
+      const prompt = question + "whenever a question is asked to answer about you should refer the context provided in the history";
   
       if (isFirstMessage === 'true') {
         // Fetch context for new session from the provided URL
