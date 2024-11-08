@@ -28,14 +28,13 @@ function initializeFirebase() {
     console.log('Firebase app already initialized.');
   }
 
-  // Get Firestore and Storage instances
   const db = getFirestore();
   const storage = getStorage();
 
   return { db, storage };
 }
 
-// Gemini initialization
+
 function initializeGemini() {
   try {
     if (!process.env.GEMINI_API_KEY) {
@@ -51,7 +50,7 @@ function initializeGemini() {
     throw error;
   }
 }
-// Main initialization function
+
 function initializeServices() {
   try {
     const { db, storage } = initializeFirebase();
@@ -68,5 +67,4 @@ function initializeServices() {
   }
 }
 
-// Export the initialization function
 module.exports = { initializeServices };

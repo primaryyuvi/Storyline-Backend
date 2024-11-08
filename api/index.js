@@ -2,16 +2,13 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const cors = require('cors');
 const { handleVideoUpload } = require('../uploadVideo');
-const { handlequestions } = require('../questions');
-const {handleQuestionsWithContext} = require('../questions2');
+const {handleQuestionsWithContext} = require('../questions');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
 app.post('/api/upload-video', handleVideoUpload);
-
-app.post('/api/questions', express.json(), handlequestions);
 
 app.post('/api/question', handleQuestionsWithContext);
 
