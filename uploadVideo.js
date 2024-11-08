@@ -23,7 +23,7 @@ async function fetchVideoAsBase64(videoUrl) {
 
 
 async function processVideosWithGemini(videos,blogUrls) {
-  try {4
+  try {
     const videoParts = await Promise.all(
       videos.map(async (video) => {
         const base64Data = await fetchVideoAsBase64(video.url);
