@@ -1,19 +1,17 @@
 const { initializeServices } = require("./firebase");
 const { v4: uuidv4 } = require("uuid");
-const axios = require("axios");
-const cheerio = require("cheerio");
 const { db, storage, genAI, fileManager } = initializeServices();
 
 
 
 
 async function handleQuestionsWithContext(req, res) {
-    const { sessionId, messageId, contextUrl, isFirstMessage ,userId} = req.query;
-    const { question } = req.body;
+    const { sessionId, messageId,  isFirstMessage ,userId} = req.query;
+    const { context , question } = req.body;
   
   
 
-    console.log("contextUrl", contextUrl);
+    console.log("context", context);
     console.log("isFirstMessage", isFirstMessage);
     console.log("sessionId", sessionId);
     console.log("messageId", messageId);
@@ -22,13 +20,13 @@ async function handleQuestionsWithContext(req, res) {
     try {
     
       let conversationHistory = [];
-      const context = contextUrl +" Please answer the questions based on the context provided. If the question is unanswerable, please respond with I don't know the answer to the question as it is out of the context of the video"
+      const realContext = context +" Please answer the questions based on the context provided. If the question is unanswerable, please respond with I don't know the answer to the question as it is out of the context of the video"
   
       if (isFirstMessage === 'true') {
-        if (contextUrl != "") {
+        if (context != "") {
           conversationHistory.push({
             role: 'user',
-            parts: [{ text: `Context: ${context}` }]
+            parts: [{ text: `Context: ${realContext}` }]
           });
         }
       } else {
@@ -48,19 +46,20 @@ async function handleQuestionsWithContext(req, res) {
         });
       }
 
-      conversationHistory.push({
-        role: 'user',
-        parts: [{ text: question }]
-      });
+      // conversationHistory.push({
+      //   role: 'user',
+      //   parts: [{ text: question }]
+      // });
 
       console.log("conversationHistory", conversationHistory.parts);
       
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const chat = model.startChat({
         history: conversationHistory,
       });
       const result = await chat.sendMessage(question);
       const aiResponse = result.response;
+      console.log("aiResponse", aiResponse.text());
       console.log("aiResponse", aiResponse.usageMetadata);
 
       const aiMessage = {
@@ -71,7 +70,7 @@ async function handleQuestionsWithContext(req, res) {
         sessionId: sessionId,
         timestamp: Date.now()
       };
-      await db.collection('messages').add(aiMessage);
+      // await db.collection('messages').add(aiMessage);
   
       res.json({
         success : true,
