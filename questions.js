@@ -70,7 +70,7 @@ async function handleQuestionsWithContext(req, res) {
         sessionId: sessionId,
         timestamp: Date.now()
       };
-      // await db.collection('messages').add(aiMessage);
+      await db.collection('messages').add(aiMessage);
   
       res.json({
         success : true,
